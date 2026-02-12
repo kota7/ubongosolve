@@ -52,6 +52,8 @@ solver.print_solution()     # text output
 solver.plot_solution()      # matplotlib figure
 ```
 
+<img src="images/output=sample.png" width="500" />
+
 ### Built-in: White Chocolate puzzle
 
 ```python
