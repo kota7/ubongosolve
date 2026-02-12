@@ -1,8 +1,9 @@
 #%%
 from __future__ import annotations
 import itertools
+import json
 import warnings
-from typing import TypeAlias
+from typing import TypeAlias, Optional
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.colors import to_rgba
@@ -71,6 +72,9 @@ class Piece:
 
     def __str__(self) -> str:
         return _coordindates_as_str(self.coordinates)
+    
+    def __eq__(self, another: Piece) -> bool:
+        return isinstance(another, Piece) and self.coordinates == another.coordinates
 
     def rotate(self, angle: int) -> Piece:
         return Piece(_rotate(self.coordinates, angle))
@@ -99,6 +103,42 @@ class UbongoPuzzle:
         self.solver.parameters.max_time_in_seconds = timeout
         self.status = self.solver.Solve(self.model)
         return self.solver.StatusName(self.status)
+
+    def findall(self, filepath: str, max_solutions: Optional[int]=None, timeout: int=3600) -> int:
+        pieces_ext = self.pieces_ext
+        origin_flags = self.origin_flags
+
+        class _Collector(cp_model.CpSolverSolutionCallback):
+            def __init__(_self):
+                cp_model.CpSolverSolutionCallback.__init__(_self)
+                _self._count = 0
+                _self._file = open(filepath, "w")
+
+            def on_solution_callback(_self):
+                _self._count += 1
+                print(f"\rSolution count: {_self._count}", end=" ")
+                solution = parse_ubongo_solution(_self, self.pieces_ext, self.origin_flags)
+                # To save as json, <convert (x, y) -> id> into <list of [x, y, id]>
+                row = [[x, y, id] for (x, y), id in solution.items()]
+                json.dump(row, _self._file)
+                _self._file.write("\n")
+
+                if max_solutions is not None and _self._count >= max_solutions:
+                    print("")
+                    print(f"Reached the maximum number of solutions {max_solutions}")
+                    _self.StopSearch()
+
+            def close_file(_self):
+                _self._file.close()
+
+        self.solver.parameters.max_time_in_seconds = timeout
+        self.solver.parameters.enumerate_all_solutions = True
+
+        collector = _Collector()
+        status = self.solver.Solve(self.model, collector)
+        print()
+        collector.close_file()
+        return collector._count
 
     @property
     def status_name(self) -> str:
@@ -133,10 +173,17 @@ def make_ubongo_problem(pieces: list[Piece], board: Board):
     # Expand the list of pieces by flip and rotation
     pieces_ext = {}
     for id, piece in enumerate(pieces):
+        tmp = {}
         for flip, angle in itertools.product([0, 1], [0, 90, 180, 270]):
             p = piece.rotate(angle) if flip == 0 else piece.flip().rotate(angle)
             key = (id, flip, angle)
-            pieces_ext[key] = p
+            if p not in tmp.values():
+                tmp[key] = p
+            # Here, we skip the orientation if the same shape is already covered
+            # This would enhance the computation
+            # For example, bar shape "---" would have the exact same shape by flipping or 180 rotation
+            # It would have only two unique shapes, instead of eight
+        pieces_ext.update(tmp)
 
     # For each (extended) piece, precompute the candidate origin positions
     origin_candidates = {}
@@ -478,4 +525,11 @@ if __name__ == "__main__":
         p.plot_solution()
         print()
 
-# %%
+    #%% Find all solutions to white chocolate problem
+    p = UbongoPuzzle(whitechocolate.pieces, whitechocolate.board)
+    n = p.findall("chocolate_all.jsonl")
+    # We found 31056 solutions, but the package says there are 7764 solution.
+    # Actually 31056 = 7764 * 4.
+    # We have 4x solutions because the solver do not distinguish identical patterns;
+    # Four patterns are original, 180-rotated, flip-horizontally, and flip-vertically
+
