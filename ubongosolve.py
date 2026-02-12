@@ -118,13 +118,8 @@ class UbongoPuzzle:
     def print_solution(self):
         print(self.solution_as_str)
 
-    @property
-    def solution_as_fig(self, **kwargs) -> tuple[plt.Figure, plt.Axes]:
+    def plot_solution(self, **kwargs) -> tuple[plt.Figure, plt.Axes]:
         return _ubongo_solution_as_fig(self.solution, **kwargs)
-
-    def plot_solution(self, **kwargs):
-        _ubongo_solution_as_fig(self.solution, **kwargs)
-        None
 
 
 def make_ubongo_problem(pieces: list[Piece], board: Board):
@@ -483,3 +478,5 @@ if __name__ == "__main__":
         #p.print_solution()
         p.plot_solution()
         print()
+
+# %%

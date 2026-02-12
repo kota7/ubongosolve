@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ubongosolve"
-version = "0.1.0"
+version = "0.2.0"
 description = "Solve ubongo puzzle by constraint programming"
 authors = [
     {name = "Kota Mori", email = "kmori05@gmail.com"}
