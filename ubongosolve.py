@@ -298,6 +298,50 @@ def _ubongo_solution_as_fig(
     return fig, ax
 
 
+class ubongo:
+    class pieces:
+        I2 = Piece([(0,0), (1,0)])
+
+        I3 = Piece([(0,0), (1,0), (2,0)])
+        L3 = Piece([(0,0), (1,0), (1,1)])
+
+        I4 = Piece([(0,0), (1,0), (2,0), (3,0)])
+        O4 = Piece([(0,0), (1,0), (0,1), (1,1)])
+        T4 = Piece([(0,0), (1,0), (2,0), (1,1)])
+        S4 = Piece([(1,0), (2,0), (0,1), (1,1)])
+        L4 = Piece([(0,0), (1,0), (2,0), (2,1)])
+
+        F5 = Piece([(0,0), (1,0), (2,0), (0,1), (1,1)])
+        L5 = Piece([(0,0), (1,0), (2,0), (3,0), (3,1)])
+        T5 = Piece([(0,0), (1,0), (2,0), (3,0), (1,1)])
+        Z5 = Piece([(0,0), (0,1), (1,1), (2,1), (2,2)])
+        
+        _all = [I2, I3, L3, I4, O4, T4, S4, L4, F5, L5, T5, Z5]
+
+    sample_problems = [
+        {
+            "pieces": [pieces.T4, pieces.T5, pieces.S4],
+            "board": Board([
+                (1,0), (2,0),
+                (0,1), (1,1), (2,1), (3,1),
+                (1,2), (2,2), (3,2), (4,2),
+                (1,3), (2,3), (3,3)
+            ])
+        },
+        {
+            "pieces": [pieces.L3, pieces.I3, pieces.T5, pieces.L5],
+            "board": Board([
+                (1,0), (2,0),
+                (1,1), (2,1), (3,1),
+                (1,2), (2,2), (3,2),
+                (0,3), (1,3), (2,3), (3,3),
+                (0,4), (1,4),
+                (0,5), (1,5)
+            ])
+        },
+    ]
+
+
 class whitechocolate:
     # White Chocolate Puzzle
     # https://store.hanayamatoys.co.jp/items/58611532
@@ -402,7 +446,6 @@ if __name__ == "__main__":
         Piece([(0,0), (0,1), (0,2), (0,3), (1,3)]), # L-shape
         Piece([(0,0), (1,0), (1,1), (2,1)]),        # S-shape
         Piece([(0,0), (0,1), (1,1)]),               # mini L-shape
-        # ... more pieces
     ]
 
     # Define a board
@@ -417,13 +460,22 @@ if __name__ == "__main__":
     solver.print_solution()     # text output
     solver.plot_solution()      # matplotlib figure
 
-    #%%
+    #%% Ubongo sample
+    for problem in ubongo.sample_problems:
+        p = UbongoPuzzle(problem["pieces"], problem["board"])
+        status = p.solve()
+        print(status)
+        #p.print_solution()
+        p.plot_solution()
+
+    #%% White Chocolate example
     p = UbongoPuzzle(whitechocolate.pieces, whitechocolate.board)
     status = p.solve()
     print(status)
     #p.print_solution()
     p.plot_solution()
-    #%%
+
+    #%% White Chocolate example, more
     for name, board in whitechocolate.boards.items():
         p = UbongoPuzzle(whitechocolate.pieces, board)
         status = p.solve()
@@ -431,5 +483,3 @@ if __name__ == "__main__":
         #p.print_solution()
         p.plot_solution()
         print()
-
-# %%

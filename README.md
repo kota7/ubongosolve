@@ -11,6 +11,9 @@ Given a set of polyomino pieces and a board, UbongoSolver finds a placement that
 - **Visualization**: text-based and matplotlib-based solution display with colored pieces and piece-boundary outlines
 - **Built-in puzzles**: includes the [White Chocolate puzzle](https://store.hanayamatoys.co.jp/items/58611532) with a few board variants
 
+
+<img src="images/output-sample-1.png" width="300" /> <img src="images/output-sample-2.png" width="300" />
+
 ## Installation
 
 Requires Python 3.10+.
@@ -23,8 +26,8 @@ pip install ubongosolve
 
 ```bash
 git clone https://github.com/kota7/ubongosolve.git
-cd ubongosolver
-uv sync
+cd ubongosolve
+pip install -U .
 ```
 
 ## Quick Start
@@ -52,9 +55,19 @@ solver.print_solution()     # text output
 solver.plot_solution()      # matplotlib figure
 ```
 
-<img src="images/output-sample.png" width="300" />
 
-### Built-in: White Chocolate puzzle
+### Example: Ubongo Sample problem
+
+```python
+from ubongosolve import UbongoPuzzle, ubongo
+
+problem = ubongo.sample_problems[0]  # Two problems are included
+solver = UbongoPuzzle(problem["pieces"], problem["board"])
+solver.solve()
+solver.plot_solution()
+```
+
+### Example: White Chocolate puzzle
 
 ```python
 from ubongosolve import UbongoPuzzle, whitechocolate
@@ -98,10 +111,6 @@ A board defined by a set of `(x, y)` cell coordinates. Can be any shape — rect
    - Each piece is placed exactly once (one orientation + origin selected).
    - Each board cell is covered by exactly one piece.
 4. **Solve**: OR-Tools CP-SAT finds a feasible assignment or proves infeasibility.
-
-## Publishing to PyPI
-
-See the [PyPI publishing guide](#publishing-to-pypi-step-by-step) below.
 
 ## License
 
