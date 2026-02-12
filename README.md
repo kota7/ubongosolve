@@ -12,7 +12,7 @@ Given a set of polyomino pieces and a board, UbongoSolver finds a placement that
 - **Built-in puzzles**: includes the [White Chocolate puzzle](https://store.hanayamatoys.co.jp/items/58611532) with a few board variants
 
 
-<img src="images/output-sample-1.png" height="300" /> <img src="images/output-sample-2.png" width="300" />
+<img src="images/output-sample-1.png" height="300" /> <img src="images/output-sample-2.png" width="250" />
 
 ## Installation
 
