@@ -102,7 +102,6 @@ A board defined by a set of `(x, y)` cell coordinates. Can be any shape — rect
 | `solution` | `dict[tuple[int,int], int]` mapping each cell to its piece ID |
 | `print_solution()` | Print an ASCII representation |
 | `plot_solution()` | Display a matplotlib figure with colored pieces |
-| `solution_as_fig` | Returns `(fig, ax)` without displaying |
 
 ## How It Works
 
