@@ -110,16 +110,12 @@ class UbongoPuzzle:
             raise ValueError("Problem has not been solved yet")
         
         return parse_ubongo_solution(self.solver, self.pieces_ext, self.origin_flags)
-
-    @property
-    def solution_as_str(self, **kwargs) -> str:
-        return _ubongo_solution_as_str(self.solution, **kwargs)
     
-    def print_solution(self):
-        print(self.solution_as_str)
+    def print_solution(self, **kwargs):
+        return print_ubongo_solution(self.solution, **kwargs)
 
     def plot_solution(self, **kwargs) -> tuple[plt.Figure, plt.Axes]:
-        return _ubongo_solution_as_fig(self.solution, **kwargs)
+        return plot_ubongo_solution(self.solution, **kwargs)
 
 
 def make_ubongo_problem(pieces: list[Piece], board: Board):
@@ -214,9 +210,10 @@ def parse_ubongo_solution(
     return out
 
 
-def _ubongo_solution_as_str(
+def print_ubongo_solution(
     solution: dict[tuple[int, int], int],
-    chars: str="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz*#@%="
+    chars: str="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz*#@%=",
+    display: bool=True
 ) -> str:
     max_x = max(x for (x, _) in solution)
     max_y = max(y for (_, y) in solution)
@@ -235,17 +232,19 @@ def _ubongo_solution_as_str(
         board[y][x] = id
     
     out = "\n".join("".join(chars[c] + " " if c >= 0 else "  " for c in row) for row in board)
+    if display:
+        print(out)
     return out
 
 
-def _ubongo_solution_as_fig(
+def plot_ubongo_solution(
     solution: dict[tuple[int, int], int],
     ax=None,
     cmap_name: str = "tab20",
     figsize: tuple[float, float]=(8, 4),
     add_text: bool = True,
     display: bool = True
-):
+) -> tuple[plt.Figure, plt.Axes]:
     if ax is None:
         fig, ax = plt.subplots(1, 1, figsize=figsize)
     else:
