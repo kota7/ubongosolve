@@ -1,4 +1,5 @@
 # 🧩 UbongoSolve
+[![](https://badge.fury.io/py/ubongosolve.svg)](https://badge.fury.io/py/ubongosolve)
 
 A Python solver for [Ubongo](https://en.wikipedia.org/wiki/Ubongo)-style tile-placement puzzles using constraint programming ([OR-Tools CP-SAT](https://developers.google.com/optimization/cp/cp_solver)).
 
