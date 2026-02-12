@@ -99,6 +99,7 @@ A board defined by a set of `(x, y)` cell coordinates. Can be any shape — rect
 | Method / Property | Description |
 |---|---|
 | `solve(timeout=100)` | Solve the puzzle. Returns status string (`"OPTIMAL"`, `"FEASIBLE"`, `"INFEASIBLE"`, ...) |
+| `findall(filepath, max_solutions=None, timeout=3600)` | Find all solutions and write to a file.  Returns the number of solutions found |
 | `solution` | `dict[tuple[int,int], int]` mapping each cell to its piece ID |
 | `print_solution()` | Print an ASCII representation |
 | `plot_solution()` | Display a matplotlib figure with colored pieces |
