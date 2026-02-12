@@ -3023,7 +3023,7 @@ wheels = [
 
 [[package]]
 name = "ubongosolve"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
@@ -3048,8 +3048,8 @@ requires-dist = [
 dev = [
     { name = "jupyter" },
     { name = "pytest" },
-    { name = "twine", specifier = ">=6.2.0" },
-    { name = "wheel", specifier = ">=0.46.3" },
+    { name = "twine" },
+    { name = "wheel" },
 ]
 
 [[package]]

@@ -530,6 +530,6 @@ if __name__ == "__main__":
     n = p.findall("chocolate_all.jsonl")
     # We found 31056 solutions, but the package says there are 7764 solution.
     # Actually 31056 = 7764 * 4.
-    # We have 4x solutions because the solver do not distinguish identical patterns;
+    # We have 4x solutions because the solver does not distinguish identical patterns;
     # Four patterns are original, 180-rotated, flip-horizontally, and flip-vertically
 
