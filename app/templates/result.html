@@ -1,0 +1,22 @@
+{% if error %}
+<div class="error">{{ error }}</div>
+{% else %}
+<div class="solution">
+  <h3>✅ Solution Found</h3>
+  <table class="result-grid">
+    {% for row in grid %}
+    <tr>
+      {% for cell in row %}
+      <td class="result-cell {% if cell.in_board %}filled{% else %}empty{% endif %}"
+          {% if cell.in_board %}
+          style="background-color: {{ cell.color }};"
+          title="Piece {{ cell.piece_index }}"
+          {% endif %}>
+        {% if cell.in_board %}{{ cell.piece_index }}{% endif %}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}

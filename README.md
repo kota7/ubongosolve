@@ -113,6 +113,13 @@ A board defined by a set of `(x, y)` cell coordinates. Can be any shape — rect
    - Each board cell is covered by exactly one piece.
 4. **Solve**: OR-Tools CP-SAT finds a feasible assignment or proves infeasibility.
 
+
+
+## Ubongo Solver App
+
+See [app/](app/) directory.
+
+
 ## License
 
 MIT

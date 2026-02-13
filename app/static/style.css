@@ -1,0 +1,259 @@
+/* ===== Base ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a2e;
+}
+
+h3 {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  color: #444;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== Panels ===== */
+.panel {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.piece-subsection {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #eee;
+}
+
+/* ===== Board Grid ===== */
+.board-controls {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.board-controls label {
+  font-size: 0.85rem;
+}
+
+.board-controls input[type="number"] {
+  width: 3.5rem;
+  padding: 0.2rem 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.board-controls button {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.board-controls button:hover {
+  background: #eee;
+}
+
+.grid {
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+  user-select: none;
+}
+
+.board-cell, .custom-cell {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ccc;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.08s;
+}
+
+.board-cell.off, .custom-cell.off { background: #fff; }
+.board-cell.on,  .custom-cell.on  { background: #1a1a2e; }
+.board-cell:hover { background: #ddd; }
+.board-cell.on:hover { background: #333; }
+.custom-cell:hover { background: #ddd; }
+.custom-cell.on:hover { background: #333; }
+
+.small-grid .custom-cell {
+  width: 28px;
+  height: 28px;
+}
+
+/* ===== Predefined Pieces ===== */
+.predefined-pieces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.piece-card {
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  min-width: 60px;
+}
+
+.piece-card:hover {
+  border-color: #999;
+}
+
+.piece-card.selected {
+  border-color: #1a1a2e;
+  background: #e8eaf6;
+}
+
+.piece-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.piece-preview {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.piece-preview td {
+  width: 12px;
+  height: 12px;
+}
+
+.preview-on  { background: #1a1a2e; }
+.preview-off { background: transparent; }
+
+/* ===== Selected Pieces ===== */
+.selected-pieces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2rem;
+  align-items: flex-start;
+}
+
+.piece-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #e8eaf6;
+  border: 1px solid #c5cae9;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #e53935;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.2rem;
+  line-height: 1;
+}
+
+.remove-btn:hover {
+  color: #b71c1c;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #1a1a2e;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.btn:hover { background: #2d2d50; }
+.btn:disabled { background: #999; cursor: not-allowed; }
+
+.btn-solve {
+  font-size: 1.1rem;
+  padding: 0.6rem 2rem;
+  width: 100%;
+}
+
+/* ===== Result Grid ===== */
+.result-grid {
+  border-collapse: collapse;
+  margin: 0.8rem 0;
+}
+
+.result-cell {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0,0,0,0.15);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.result-cell.empty {
+  background: transparent;
+  border-color: transparent;
+}
+
+.solution h3 {
+  color: #2e7d32;
+  margin-bottom: 0.4rem;
+}
+
+.error {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 500px) {
+  .board-cell, .custom-cell, .result-cell {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+}
