@@ -669,8 +669,8 @@ if __name__ == "__main__":
         )
         number = re.search(r"_(\d+)\.png", os.path.basename(img_path)).group(1)
         c.setFont("Helvetica", 8)
-        text_x = x + 35
-        c.drawCentredString(text_x, y + display_height - 4, f"Solution {number}")
+        text_x = x + 15
+        c.drawString(text_x, y + display_height - 4, f"Solution {number}")
     c.save()  # save the last page
     print()
     print("Finished")
