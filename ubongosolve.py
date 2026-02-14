@@ -339,6 +339,43 @@ def plot_ubongo_solution(
     return fig, ax
 
 
+def _hash_ubongo_solution(solution: dict[tuple[int, int], int]) -> int:
+    # Compute the original hash value for a ubongo solution
+    # such that equivalent ones should have the same hash value.
+    # To this end, we collect all equivalent solutions and calculate the minimum
+    # Flatten all integers into a long tuple, and calculate the hash
+    def _convert_solution(solution, flip, angle):
+        keys = []
+        values = []
+        for key, value in solution.items():
+            keys.append(key)
+            values.append(value)
+        
+        if flip == 1:
+            keys = [(-x, y) for x, y in keys]
+        if angle == 90:
+            keys = [(y, -x) for x, y in keys]
+        elif angle == 180:
+            keys = [(-x, -y) for x, y in keys]
+        elif angle == 270:
+            keys = [(-y, x) for x, y in keys]
+        min_x = min(x for x, _ in keys)
+        min_y = min(y for _, y in keys)
+        keys = [(x - min_x, y - min_y) for x, y in keys]
+        return {key: value for key, value in zip(keys, values)}
+
+    equivalents = []
+    for flip, angle in itertools.product([0, 1], [0, 90, 180, 270]):
+        equivalents.append(_convert_solution(solution, flip, angle))
+    # To make sure cells are ordered, convert them to a list of (x, y, id)
+    # Since the cells are order-independent, sort them by (x, y) for the uniqueness
+    equivalents = [sorted([(x, y, id) for (x, y), id in e.items()]) for e in equivalents]
+    # We define the minimum as the representative one
+    rep = min(equivalents)
+    # Convert the list to tuple to calculate the hash value
+    return hash(tuple(rep))
+
+
 class ubongo:
     class pieces:
         I2 = Piece([(0,0), (1,0)])
@@ -525,7 +562,7 @@ if __name__ == "__main__":
         p.plot_solution()
         print()
 
-    #%% Find all solutions to white chocolate problem
+    #%% Find all solutions to white chocolate problem (takes a few minutes)
     p = UbongoPuzzle(whitechocolate.pieces, whitechocolate.board)
     n = p.findall("chocolate_all.jsonl")
     # We found 31056 solutions, but the package says there are 7764 solution.
@@ -533,3 +570,109 @@ if __name__ == "__main__":
     # We have 4x solutions because the solver does not distinguish identical patterns;
     # Four patterns are original, 180-rotated, flip-horizontally, and flip-vertically
 
+    #%% Visualize all chcolate solutions (takes a few minutes)
+    import os
+    import json
+    savedir = "chocolate_solutions"
+    os.makedirs(savedir, exist_ok=True)
+    with open("chocolate_all.jsonl") as f:
+        ct = 0
+        finished = set()
+        for row in f:
+            tmp = json.loads(row.strip())
+            solution = {(x, y): id for (x, y, id) in tmp}
+            # Check if a duplicate solution is already finished
+            hashvalue = _hash_ubongo_solution(solution)
+            if hashvalue in finished:
+                continue
+            ct += 1
+            fig, ax = plot_ubongo_solution(solution, display=False, figsize=(3.2, 2))
+            savename = os.path.join(savedir, f"sol_{ct}.png")
+            fig.savefig(savename)
+            fig, ax = plot_ubongo_solution(solution, display=False, figsize=(3.2, 2), add_text=False)
+            savename = os.path.join(savedir, f"sol_notext_{ct}.png")
+            fig.savefig(savename)
+
+            print(f"\rSaved solution {ct}", end="")
+            finished.add(hashvalue)
+        print()
+        print(f"Finished. Final solution count: {ct}")
+
+    #%% Make a pdf document with all solutions
+    from glob import glob
+    import os
+    import re
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.units import inch
+    from PIL import Image    
+    imagefiles = glob(os.path.join("chocolate_solutions", "*_notext_*.png"))
+    # sort by number
+    imagefiles.sort(key=lambda f: int(re.search(r"_(\d+)\.png", os.path.basename(f)).group(1)))
+    print(f"{len(imagefiles)} images found: {imagefiles[:5]} ...")
+    assert len(imagefiles) > 0
+    # document settings
+    pdffile = "choco_allsols.pdf"
+    papersize = A4
+    cols = 3
+    rows = 7
+    margin_x = 0.3 * inch
+    margin_y = 0.3 * inch
+    # calculate length
+    images_per_page = cols * rows
+    page_width, page_height = papersize
+    available_width = page_width - 2 * margin_x
+    available_height = page_height - 2 * margin_y    
+    cell_width = available_width / cols
+    cell_height = available_height / rows    
+    first_img = Image.open(imagefiles[0])
+    img_width, img_height = first_img.size
+    img_aspect = img_width / img_height
+    padding = 0.05 * inch
+    max_img_width = cell_width - padding
+    max_img_height = cell_height - padding
+    # Fit image maintaining aspect ratio
+    if max_img_width / img_aspect < max_img_height:
+        display_width = max_img_width
+        display_height = max_img_width / img_aspect
+    else:
+        display_height = max_img_height
+        display_width = max_img_height * img_aspect
+    # start editing the document
+    print(f"Start editing {pdffile}")
+    c = canvas.Canvas(pdffile, papersize=papersize)
+    for idx, img_path in enumerate(imagefiles):
+        print(f"\r{idx+1}/{len(imagefiles)} ({100 * (idx+1) // len(imagefiles)}%)", end="")
+        
+        # Position in grid
+        item_on_page = idx % images_per_page
+        col = item_on_page % cols
+        row = item_on_page // cols
+
+        # Start new page if needed
+        if item_on_page == 0 and idx > 0:
+            c.showPage()
+            # debug
+            #break
+        
+        # Calculate position (origin is bottom-left in reportlab)
+        # We need to flip rows since we count from top but reportlab counts from bottom
+        x = margin_x + col * cell_width + (cell_width - display_width) / 2
+        y = page_height - margin_y - (row + 1) * cell_height + (cell_height - display_height) / 2
+
+        # Draw image
+        c.drawImage(
+            img_path, x, y, 
+            width=display_width, 
+            height=display_height,
+            preserveAspectRatio=True
+        )
+        number = re.search(r"_(\d+)\.png", os.path.basename(img_path)).group(1)
+        c.setFont("Helvetica", 8)
+        text_x = x + 35
+        c.drawCentredString(text_x, y + display_height - 4, f"Solution {number}")
+    c.save()  # save the last page
+    print()
+    print("Finished")
+
+# %%
