@@ -31,7 +31,7 @@ Requires the [gcloud CLI](https://cloud.google.com/sdk/docs/install) with a bill
 gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 
-ggcloud run deploy ubongo-solver \
+gcloud run deploy ubongo-solver \
   --source . \
   --region asia-northeast1 \
   --allow-unauthenticated \
